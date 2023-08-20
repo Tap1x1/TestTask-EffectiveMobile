@@ -1,163 +1,146 @@
-def show_data(filename: str):
+def show_entries(filename: str) -> None:
     """Данная функция выводит на экран данные которые содержатся в файле data.txt"""
 
     with open(filename, "r", encoding="utf-8") as data:
-        data_read = data.read()
-        if len(data_read) != 0:
-            print("\n№ | ФИО | Организация | Рабочий номер телефона | Личный номер телефона")
-            print(data_read)
+        if phone_book := data.read():
+            print("№ | ФИО | Организация | Рабочий номер телефона | Личный номер телефона")
+            print(phone_book)
         else:
             print(f"Файл {filename} пуст")
 
 
-def export_data(filename: str):
+def export_entries(filename: str) -> None:
     """Данная функция записывает данные введенные пользователем, после сохраняет их в файл data.txt"""
+    try:
+        with open(filename, "r", encoding="utf-8") as data:
+            phone_book = data.read()
+    except FileNotFoundError:
+        print(f"File not found: {filename}")
+        return
+    contact_num = len(phone_book.split("\n"))
+    try:
+        with open(filename, "a", encoding="utf-8") as data:
+            contact_name = input("Введите ФИО: ").title()
+            company_name = input("Введите название организации: ").title()
+            work_phone_number = input("Введите рабочий номер телефона: ")
+            self_phone_number = input("Введите личный номер телефона: ")
+            data.write(f"{contact_num} | {contact_name} |  {company_name} | {work_phone_number} "
+                       f"| {self_phone_number}\n")
+            print(f"Добавлена запись : {contact_num} | {contact_name} | {company_name} | {work_phone_number} "
+                  f"| {self_phone_number}\n")
+    except Exception as e:
+        print("Не удалось добавить запись", e)
+        return
 
-    with open(filename, "r", encoding="utf-8") as data:
-        tel_file = data.read()
 
-    num = len(tel_file.split("\n"))
-
-    with open(filename, "a", encoding="utf-8") as data:
-        fio: str = input("Введите ФИО: ").title()
-        company_name = input("Введите название организации: ").title()
-        work_phone_number = input("Введите рабочий номер телефона: ")
-        self_phone_number = input("Введите личный номер телефона: ")
-
-        try:
-            data.write(f"{num} | {fio} |  {company_name} | {work_phone_number} | {self_phone_number}\n")
-        except Exception:
-            print("Не удалось добавить запись")
-            return
-
-        print(f"Добавлена запись : {num} | {fio} | {company_name} | {work_phone_number} | {self_phone_number}\n")
-
-
-def edit_data(filename: str):
+def edit_entries(filename: str) -> None:
     """Данная функция изменяет данные в файле data.txt на те что ввёл пользователь."""
 
-    print("\n№ | ФИО | Организация | Рабочий номер телефона | Личный номер телефона")
-    with open(filename, "r", encoding="utf-8") as data:
-        tel_book = data.read()
-    print(tel_book)
+    try:
+        with open(filename, "r", encoding="utf-8") as data:
+            phone_book_data = data.read()
+    except FileNotFoundError:
+        print(f"File not found: {filename}")
+        return
+
+    print("№ | ФИО | Организация | Рабочий номер телефона | Личный номер телефона")
+    print(phone_book_data)
 
     try:
         index_edit_data = int(input("Введите номер строки для редактирования: ")) - 1
-    except Exception:
-        return print("Введен некорректный номер строки!!!")
-
-    tel_book_lines = tel_book.split("\n")
-    edit_tel_book_lines = tel_book_lines[index_edit_data]
-    elements = edit_tel_book_lines.split(" | ")
-
-    fio: str = input("Введите ФИО: ").title()
-    company_name = input("Введите название организации: ").title()
-    work_phone_number = input("Введите рабочий номер телефона: ")
-    self_phone_number = input("Введите личный номер телефона: ")
-
-    num = elements[0]
-
-    if not fio:
-        fio = elements[1]
-    if not company_name:
-        company_name = elements[2]
-    if not work_phone_number:
-        work_phone_number = elements[3]
-    if not self_phone_number:
-        self_phone_number = elements[4]
-
-    edited_line = f"{num} | {fio} | {company_name} | {work_phone_number} | {self_phone_number}"
-    tel_book_lines[index_edit_data] = edited_line
-    print(f"Запись — {edit_tel_book_lines}, изменена на — {edited_line}\n")
-
-    with open(filename, "w", encoding="utf-8") as f:
-        f.write("\n".join(tel_book_lines))
-
-
-def delete_data(filename: str):
-    """Данная функция удаляет выбранный контакт из файла data.txt"""
-
-    with open(filename, "r", encoding="utf-8") as data:
-        tel_book = data.read()
-    print("\n№ | ФИО | Организация | Рабочий номер телефона | Личный номер телефона")
-    print(tel_book)
-
-    try:
-        index_delete_data = int(input("Введите номер строки для удаления: \n")) - 1
-    except Exception:
-        print("\nВведен некорректный номер строки!!!\nПопробуйте ещё раз.")
-        return delete_data(filename)
-
-    tel_book_lines = tel_book.split("\n")
-
-    try:
-        del_tel_book_lines = tel_book_lines[index_delete_data]
-    except Exception:
-        print("Номер не найден")
+    except ValueError:
+        print("Введен некорректный номер строки!!!")
         return
 
-    tel_book_lines.pop(index_delete_data)
+    phone_book_lines = phone_book_data.split("\n")
+    edit_phone_book_lines = phone_book_lines[index_edit_data]
+    elements = edit_phone_book_lines.split(" | ")
 
-    print(f"Удалена запись: {del_tel_book_lines}\n")
-    with open(filename, "w", encoding="utf-8") as data:
-        data.write("\n".join(tel_book_lines))
+    contact_name = input("Введите ФИО: ").title() or elements[1]
+    company_name = input("Введите название организации: ").title() or elements[2]
+    work_phone_number = input("Введите рабочий номер телефона: ") or elements[3]
+    self_phone_number = input("Введите личный номер телефона: ") or elements[4]
+    contact_num = elements[0]
 
+    edited_line = f"{contact_num} | {contact_name} | {company_name} | {work_phone_number} | {self_phone_number}"
+    phone_book_lines[index_edit_data] = edited_line
+    print(f"Запись — {edit_phone_book_lines}, изменена на — {edited_line}\n")
+    try:
+        with open(filename, "w", encoding="utf-8") as file:
+            file.write("\n".join(phone_book_lines))
+    except FileNotFoundError:
+        print(f"File not found: {filename}")
 
-def search_data(filename: str):
+def search_entries(filename: str) -> None:
     """Данная функция ищет данные в файле data.txt по параметрам которые ввёл пользователь."""
+    try:
+        with open(filename, "r", encoding="utf-8") as data:
+            phone_book = data.readlines()
+    except FileNotFoundError:
+        print(f"File not found: {filename}")
+        return
 
-    with open(filename, "r", encoding="utf-8") as data:
-        tel_book = data.read()
-
-    flag = 1
+    flag = False
     data_search = input('Введите данные для поиска: ').title()
-    tel_book_lines = tel_book.split("\n")
-    print("\n№ | ФИО | Организация | Рабочий номер телефона | Личный номер телефона\n")
+    print("№ | ФИО | Организация | Рабочий номер телефона | Личный номер телефона\n")
 
-    for line in tel_book_lines:
+    for line in phone_book:
         if data_search in line:
-            flag = 0
+            flag = True
             print(line)
-    if flag:
+
+    if not flag:
         print('Контакт не найден!\n')
+
+
+MENU_OPTIONS = {
+    1: show_entries,
+    2: export_entries,
+    3: edit_entries,
+    4: search_entries,
+}
 
 
 def main():
     """Основная функция main в которой создается файл data.txt, если он ещё не был  создан. Также в ней находится
     цикл который вызывает все другие функции."""
 
-    my_choice = -1
-    file_tel = "data.txt"
+    file_phone = "data.txt"
+    initialize_file(file_phone)
 
-    with open(file_tel, "a", encoding="utf-8") as file:
-        file.write("")
-    while my_choice != 0:
-        print("\n Выберите одну из опций:")
-        print("1 — Вывести справочник на экран")
-        print("2 — Добавить данные в справочник")
-        print("3 — Изменить данные в справочнике")
-        print("4 — Поиск данных в справочнике")
-        print("5 — Удалить данные из справочника")
-        print("0 — Выход из программы\n")
+    while True:
+        print_menu()
+        action = get_menu_option()
 
-        try:
-            action = int(input("Опция: "))
-        except Exception:
-            print("Введите номер опции!")
-            return main()
-
-        if action == 1:
-            show_data(file_tel)
-        elif action == 2:
-            export_data(file_tel)
-        elif action == 3:
-            edit_data(file_tel)
-        elif action == 4:
-            search_data(file_tel)
-        elif action == 5:
-            delete_data(file_tel)
+        if action in MENU_OPTIONS:
+            func = MENU_OPTIONS[action]
+            func(file_phone)
+        elif action == 0:
+            break
         else:
-            my_choice = 0
+            print("Invalid option. Please enter a valid menu option.")
+
+
+def initialize_file(file_name):
+    with open(file_name, "a", encoding="utf-8") as file:
+        file.write("")
+
+
+def print_menu():
+    print("\nВыберите одну из опций:")
+    print("1 – Вывести справочник на экран")
+    print("2 – Добавить данные в справочник")
+    print("3 – Изменить данные в справочнике")
+    print("4 – Поиск данных в справочнике")
+    print("0 – Выход из программы\n")
+
+
+def get_menu_option():
+    while True:
+        try:
+            return int(input("Опция: "))
+        except ValueError:
+            print("Введите номер опции!")
 
 
 if __name__ == "__main__":
