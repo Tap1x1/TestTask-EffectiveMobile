@@ -24,6 +24,7 @@ def export_entries(filename: str) -> None:
             company_name = input("Введите название организации: ").title()
             work_phone_number = input("Введите рабочий номер телефона: ")
             self_phone_number = input("Введите личный номер телефона: ")
+
             data.write(f"{contact_num} | {contact_name} |  {company_name} | {work_phone_number} "
                        f"| {self_phone_number}\n")
             print(f"Добавлена запись : {contact_num} | {contact_name} | {company_name} | {work_phone_number} "
@@ -71,6 +72,7 @@ def edit_entries(filename: str) -> None:
     except FileNotFoundError:
         print(f"File not found: {filename}")
 
+
 def search_entries(filename: str) -> None:
     """Данная функция ищет данные в файле data.txt по параметрам которые ввёл пользователь."""
     try:
@@ -93,6 +95,7 @@ def search_entries(filename: str) -> None:
         print('Контакт не найден!\n')
 
 
+"""Словарь для хранения опций меню"""
 MENU_OPTIONS = {
     1: show_entries,
     2: export_entries,
@@ -102,8 +105,8 @@ MENU_OPTIONS = {
 
 
 def main():
-    """Основная функция main в которой создается файл data.txt, если он ещё не был  создан. Также в ней находится
-    цикл который вызывает все другие функции."""
+    """Основная функция main в которой создается файл data.txt, если он ещё не был создан. Также в ней находится
+    цикл который, вызывает функции в зависимости от выбранной пользователем опции."""
 
     file_phone = "data.txt"
     initialize_file(file_phone)
@@ -118,7 +121,7 @@ def main():
         elif action == 0:
             break
         else:
-            print("Invalid option. Please enter a valid menu option.")
+            print("Неверный вариант. Пожалуйста, введите правильный вариант меню")
 
 
 def initialize_file(file_name):
