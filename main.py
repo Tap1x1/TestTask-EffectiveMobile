@@ -9,29 +9,91 @@ def show_entries(filename: str) -> None:
             print(f"Файл {filename} пуст")
 
 
+
 def export_entries(filename: str) -> None:
-    """Данная функция записывает данные введенные пользователем, после сохраняет их в файл data.txt"""
+    """Эта функция записывает введенные пользователем данные и сохраняет их в файле data.txt"""
     try:
         with open(filename, "r", encoding="utf-8") as data:
             phone_book = data.read()
     except FileNotFoundError:
-        print(f"File not found: {filename}")
+        print(f"Файл не найден: {filename}")
         return
+
+    # Создает набор для хранения уникальных имен контактов
+    unique_contact_names = set()
+
+    # Наполнение набора существующими именами контактов
+    for line in phone_book.split("\n"):
+        parts = line.split(" | ")
+        if len(parts) >= 2:
+            unique_contact_names.add(parts[1].strip().title())
+
     contact_num = len(phone_book.split("\n"))
+
     try:
         with open(filename, "a", encoding="utf-8") as data:
             contact_name = input("Введите ФИО: ").title()
-            company_name = input("Введите название организации: ").title()
-            work_phone_number = input("Введите рабочий номер телефона: ")
-            self_phone_number = input("Введите личный номер телефона: ")
 
-            data.write(f"{contact_num} | {contact_name} |  {company_name} | {work_phone_number} "
-                       f"| {self_phone_number}\n")
-            print(f"Добавлена запись : {contact_num} | {contact_name} | {company_name} | {work_phone_number} "
-                  f"| {self_phone_number}\n")
+            # Проверка на дублирование имен контактов
+            if contact_name in unique_contact_names:
+                print(f"Contact with name '{contact_name}' already exists. Not adding duplicate.")
+                return
+
+            company_name = input("Введите название организации: ").title()
+            try:
+                work_phone_number = int(input("Введите рабочий номер телефона: "))
+            except Exception as e:
+                print(f"Не удалось добавить запись: ({e})")
+                return
+
+            try:
+                self_phone_number = int(input("Введите личный номер телефона: "))
+            except Exception as e:
+                print(f"Не удалось добавить запись: ({e})")
+                return
+
+            data.write(f"{contact_num} | {contact_name} | {company_name} | {work_phone_number} | {self_phone_number}\n")
+            print(f"Добавлена запись: {contact_num} | {contact_name} | {company_name} | {work_phone_number} | {self_phone_number}\n")
+
+            # Add the new contact name to the set of unique contact names
+            unique_contact_names.add(contact_name)
     except Exception as e:
         print("Не удалось добавить запись", e)
         return
+
+
+# def export_entries(filename: str) -> None:
+#     """Данная функция записывает данные введенные пользователем, после сохраняет их в файл data.txt"""
+#     try:
+#         with open(filename, "r", encoding="utf-8") as data:
+#             phone_book = data.read()
+#     except FileNotFoundError:
+#         print(f"File not found: {filename}")
+#         return
+#     contact_num = len(phone_book.split("\n"))
+#     try:
+#         with open(filename, "a", encoding="utf-8") as data:
+#             contact_name = input("Введите ФИО: ").title()
+#             company_name = input("Введите название организации: ").title()
+#             try:
+#                 work_phone_number = int(input("Введите рабочий номер телефона: "))
+#             except Exception as e:
+#                 print(f"Не удалось добавить запись: ({e})")
+#                 export_entries(filename)
+#
+#             try:
+#                 self_phone_number = int(input("Введите личный номер телефона: "))
+#             except Exception as e:
+#                 print(f"Не удалось добавить запись: ({e})")
+#                 export_entries(filename)
+#
+#             data.write(f"{contact_num} | {contact_name} |  {company_name} | {work_phone_number} "
+#                        f"| {self_phone_number}\n")
+#             print(f"Добавлена запись : {contact_num} | {contact_name} | {company_name} | {work_phone_number} "
+#                   f"| {self_phone_number}\n")
+#     except Exception as e:
+#         print("Не удалось добавить запись", e)
+#         return
 
 
 def edit_entries(filename: str) -> None:
@@ -59,8 +121,8 @@ def edit_entries(filename: str) -> None:
 
     contact_name = input("Введите ФИО: ").title() or elements[1]
     company_name = input("Введите название организации: ").title() or elements[2]
-    work_phone_number = input("Введите рабочий номер телефона: ") or elements[3]
-    self_phone_number = input("Введите личный номер телефона: ") or elements[4]
+    work_phone_number = int(input("Введите рабочий номер телефона: ") or elements[3])
+    self_phone_number = int(input("Введите личный номер телефона: ") or elements[4])
     contact_num = elements[0]
 
     edited_line = f"{contact_num} | {contact_name} | {company_name} | {work_phone_number} | {self_phone_number}"
